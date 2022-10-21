@@ -10,18 +10,22 @@ enum option {
 };
 
 void split() { cout << "--------------------" << endl; }
-void out(string str){cout << str << endl;}
+void out(string str){ cout << str ;}
+void outl(string str){ cout << str << endl ;}
 
 string help_info = "information:"
                    "\nbegin(b),end(e),cursorSet(c),Move to front(f),Move to next(n),"
-                   "\ndelete line(d),";
+                   "\ndelete line(d), insert(i), Search sub string(S), replace line(r), "
+                   "\nget total chars num(C), get total lines num(L),replace sub string(u),"
+                   "\nwrite into output file(w), read from input file(R), view the input file(s),"
+                   "\nquit system (q)\n";
 
 int main() {
 
     string fileIn, fileOut;
-    cout << "请输入要被读取的文件名:" << endl;
+    cout << "请输入要被读取的文件名:";
     cin >> fileIn;
-    cout << "请输入要被写入的文件名:" << endl;
+    cout << "请输入要被写入的文件名:";
     cin >> fileOut;
 
     fileEditor file(fileIn, fileOut);
@@ -29,10 +33,9 @@ int main() {
     while (1) {
         option select;
         char buf;
-        out("*****************");
+        outl("*****************");
         out("请输入操作(h查询):");
         cin >> buf;
-        cout << endl;
         string src, dest;
         select = static_cast<option>(buf);
         switch (select) {
@@ -41,10 +44,10 @@ int main() {
                 out(help_info);
                 break;
             case begin_:
-                if(file.begin()) out("移动到开头一行");
+                if(file.begin()) outl("移动到开头一行");
                 break;
             case end_:
-                if(file.end()) out("移动到最后一行");
+                if(file.end()) outl("移动到最后一行");
                 break;
             case cursor:
                 out("输出想移动的位置:");
@@ -52,10 +55,10 @@ int main() {
                 file.setCursor(num);
                 break;
             case front:
-                if(file.frontLine()) out("移动到当前的上一行");
+                if(file.frontLine()) outl("移动到当前的上一行");
                 break;
             case next_:
-                if(file.nextLine()) out("移动到当前的下一行");
+                if(file.nextLine()) outl("移动到当前的下一行");
                 break;
             case del:
                 out("输入希望删除的有效行:");
@@ -71,28 +74,33 @@ int main() {
             case insert:
                 out("请输入插入位置(输入的数+1为插入后位置，行首输0):");
                 cin >> num;
+                cin.get();
                 out("请输入要添加的字符串:");
-                cin >> src;
+                getline(cin, src);
                 file.insertLine(num, src);
                 break;
             case subStr:
+                cin.get();
                 out("请输入被替换的子串:");
-                cin >> src;
+                getline(cin, src);
                 out("请输入要替换的内容:");
-                cin >> dest;
+                getline(cin, dest);
                 file.replaceSubString(src, dest);
                 break;
             case Search:
+                cin.get();
                 out("请输入要查找的字串:");
-                cin >> src;
+                getline(cin, src);
+                cout << src <<endl;
                 file.searchSubString(src);
                 break;
             case replace:
                 out("请输入要替换的行数:");
-                cin >> num ;
+                cin >> num;
+                cin.get();
                 out("请输入内容:");
-                cin >> src;
-                file.replaceLine(num,src);
+                getline(cin, src);
+                file.replaceLine(num, src);
                 break;
             case show:
                 file.view();

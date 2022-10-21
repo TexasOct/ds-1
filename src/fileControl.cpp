@@ -56,8 +56,8 @@ Node *fileEditor::_delNode(Node *ptr) {
 }
 
 Node *fileEditor::_getNode(int l) {
-    Node *tmp = head->rear;
-    for (int i = 1; i < l; i++) {
+    Node *tmp = head;
+    for (int i = 0; i < l; i++) {
         tmp = tmp->rear;
     }
     return tmp;
@@ -108,7 +108,7 @@ bool fileEditor::frontLine() {
         pos--;
         return true;
     } else {
-        cout << "illegal range, please use a legal value";
+        cout << "illegal range, please use a legal value" << endl;
         return false;
     }
 }
@@ -119,7 +119,7 @@ bool fileEditor::nextLine() {
         pos++;
         return true;
     } else {
-        cout << "illegal range, please use a legal value";
+        cout << "illegal range, please use a legal value" << endl;
         return false;
     }
 }
@@ -138,12 +138,11 @@ void fileEditor::delLine(int num) {
 
     if (pos > num) {
         pos--;
-    } else if (pos == num && &cursor != &head) {
+    } else if (pos == num && &cursor == &head) { // if cursor in head
+        cursor = cursor->rear;
+    } else if (pos == num && cursor->rear == nullptr) { // if cursor in tail
         pos--;
         cursor = cursor->front;
-    } else if (pos == num && cursor->rear != nullptr) {
-        pos--;
-        cursor = cursor->rear;
     }
     _delNode(num);
 }
@@ -156,13 +155,13 @@ void fileEditor::searchSubString(const string &str) const {
     Node *tmp = head->rear;
     int count = 1;
     while (tmp->rear != nullptr) {
-        if (!(tmp->data.find(str))) {
+        if (tmp->data.find(str) != string::npos) {
             cout << count << " | " << tmp->data << endl;
         }
         count++;
         tmp = tmp->rear;
     }
-    if (!(tmp->data.find(str))) {
+    if (tmp->data.find(str) != string::npos) {
         cout << count << " | " << tmp->data << endl;
     }
 }
@@ -171,14 +170,14 @@ void fileEditor::replaceSubString(const string &str, const string &method) {
     Node *tmp = head->rear;
     int count = 1;
     while (tmp->rear != nullptr) {
-        if (!(tmp->data.find(str))) {
+        if (tmp->data.find(str) != string::npos) {
             _replaceData(&tmp->data, str, method);
             cout << count << " | " << tmp->data << endl;
         }
         count++;
         tmp = tmp->rear;
     }
-    if (!(tmp->data.find(str))) {
+    if (tmp->data.find(str) != string::npos) {
         _replaceData(&tmp->data, str, method);
         cout << count << " | " << tmp->data << endl;
     }

@@ -41,7 +41,7 @@ int main() {
 //    testUnit.searchSubString("d");
 //    split();
 //
-//    testUnit.replaceSubString("d", "tuo");
+//    testUnit.replaceSubString("d", "t uo");
 //    split();
 //
 //    testUnit.replaceLine(3, "test2323");
@@ -57,5 +57,11 @@ int main() {
 //    testUnit.writeIn();
 //    testUnit.view();
 //    split();
+    string test;
+    string sta = "hello world";
+    getline(cin, test);
+    cout << test << endl;
+    cout << sta.find(test);
+
 }
 

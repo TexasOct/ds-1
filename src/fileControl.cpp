@@ -87,10 +87,10 @@ void fileEditor::_delBuffer() {
 
 fileEditor::fileEditor(string fileI, string fileO) {
     string buf;
-    ifstream ptr;
+    fstream ptr;
     this->file = std::move(fileI);
     this->fileOut = std::move(fileO);
-    ptr.open(this->file);
+    ptr.open(this->file, fstream::out);
     while (getline(ptr, buf)) {
         cursor = _setNode(cursor, buf);
         pos++;
@@ -160,6 +160,9 @@ void fileEditor::delLine(int num) {
 
 void fileEditor::insertLine(int num, string str) {
     _setNode(_getNode(num), std::move(str));
+    if(pos == 0){
+        begin();
+    }
 }
 
 void fileEditor::searchSubString(const string &str) const {
@@ -250,6 +253,10 @@ void fileEditor::view() const {
     try {
         int count = 1;
         Node *tmp = head->rear;
+        if(pos == 0){
+            cout << "文件为空" << endl;
+            return;
+        }
         while (tmp->rear != nullptr) {
             cout << count++ << " | " << tmp->data;
             showCursor(count - 1);

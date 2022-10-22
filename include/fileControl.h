@@ -33,11 +33,10 @@ private:
     Node *_delNode(Node *ptr); // 删除节点，并返回cursor
     void _modifyNode(int lineNum, string modify); // 修改节点字段
     static void _replaceData(string * str, const string& src, const string& dest);
-
+    void _delBuffer();
 public:// 对外实现
     explicit fileEditor(string fileIn, string fileOut); //构造函数
     ~fileEditor() = default;;
-
     bool begin();//移动 cursor 到行首
     bool end();//移动 cursor 到行尾
     void setCursor(int num);//移动 cursor 到指定位置

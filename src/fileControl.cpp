@@ -68,13 +68,21 @@ void fileEditor::_modifyNode(int l, string m) {
     tmp->data = std::move(m);
 }
 
-void fileEditor::_replaceData(string * str, const string& src, const string& dest) {
+void fileEditor::_replaceData(string *str, const string &src, const string &dest) {
     size_t position;
     position = (*str).find(src);
     while (position != -1) {
         (*str).replace(position, src.length(), dest);
         position = (*str).find(src);
     }
+}
+
+void fileEditor::_delBuffer() {
+    Node *tmp = head->rear;
+    while (tmp->rear != nullptr) {
+        tmp = _delNode(tmp);
+    }
+    _delNode(tmp);
 }
 
 fileEditor::fileEditor(string fileI, string fileO) {
@@ -135,16 +143,19 @@ void fileEditor::setCursor(int num) {
 }
 
 void fileEditor::delLine(int num) {
-
-    if (pos > num) {
-        pos--;
-    } else if (pos == num && &cursor == &head) { // if cursor in head
-        cursor = cursor->rear;
-    } else if (pos == num && cursor->rear == nullptr) { // if cursor in tail
-        pos--;
-        cursor = cursor->front;
+    if (num <= line && num >= 1) {
+        if (pos > num) {
+            pos--;
+        } else if (pos == num && &cursor == &head) { // if cursor in head
+            cursor = cursor->rear;
+        } else if (pos == num && cursor->rear == nullptr) { // if cursor in tail
+            pos--;
+            cursor = cursor->front;
+        }
+        _delNode(num);
+    } else {
+        cout << "illegal  operate" << endl;
     }
-    _delNode(num);
 }
 
 void fileEditor::insertLine(int num, string str) {
@@ -202,7 +213,7 @@ unsigned long fileEditor::getCharNum() const {
     return sum;
 }
 
-void fileEditor::writeIn() const{
+void fileEditor::writeIn() const {
     ofstream ptr;
     ptr.open(fileOut);
     Node *tmp = head->rear;
@@ -220,12 +231,7 @@ void fileEditor::read() {
     cin >> choose;
     if (choose == 'y') {
         cursor = nullptr;
-        Node *tmp = head->rear;
-        while (tmp->rear != nullptr) {
-            tmp = _delNode(tmp);
-        }
-        _delNode(tmp);
-
+        _delBuffer();
         cursor = head;
         cursor->rear = nullptr;
         pos = 0;
@@ -241,17 +247,21 @@ void fileEditor::read() {
 }
 
 void fileEditor::view() const {
-    int count = 1;
-    Node *tmp = head->rear;
-    while (tmp->rear != nullptr) {
-        cout << count++ << " | " << tmp->data;
-        showCursor(count - 1);
+    try {
+        int count = 1;
+        Node *tmp = head->rear;
+        while (tmp->rear != nullptr) {
+            cout << count++ << " | " << tmp->data;
+            showCursor(count - 1);
+            cout << endl;
+            tmp = tmp->rear;
+        }
+        cout << count << " | " << tmp->data;
+        showCursor(count);
         cout << endl;
-        tmp = tmp->rear;
+    }catch(const char * e){
+        cout << "Error:" << e << endl;
     }
-    cout << count << " | " << tmp->data;
-    showCursor(count);
-    cout << endl;
 }
 
 void fileEditor::showCursor(int count) const {

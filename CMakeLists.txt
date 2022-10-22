@@ -8,4 +8,4 @@ add_subdirectory(src)
 add_subdirectory(test)
 
 enable_testing()
-target_link_libraries(main fileEditor)
+target_link_libraries(Editor fileEditor)

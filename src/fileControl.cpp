@@ -220,12 +220,17 @@ void fileEditor::writeIn() const {
     ofstream ptr;
     ptr.open(fileOut);
     Node *tmp = head->rear;
-    while (tmp->rear != nullptr) {
-        ptr << tmp->data << endl;
-        tmp = tmp->rear;
+    if(head->rear == nullptr){
+        cout << "File is empty!" << endl;
+        return;
+    }else{
+        while (tmp->rear != nullptr) {
+            ptr << tmp->data << endl;
+            tmp = tmp->rear;
+        }
+        ptr << tmp->data;
+        ptr.close();
     }
-    ptr << tmp->data;
-    ptr.close();
 }
 
 void fileEditor::read() {
@@ -233,7 +238,6 @@ void fileEditor::read() {
     cout << "Please confirm (y/n):";
     cin >> choose;
     if (choose == 'y') {
-        cursor = nullptr;
         _delBuffer();
         cursor = head;
         cursor->rear = nullptr;
@@ -253,19 +257,20 @@ void fileEditor::view() const {
     try {
         int count = 1;
         Node *tmp = head->rear;
-        if(pos == 0){
+        if(head->rear == nullptr){
             cout << "文件为空" << endl;
             return;
-        }
-        while (tmp->rear != nullptr) {
-            cout << count++ << " | " << tmp->data;
-            showCursor(count - 1);
+        }else{
+            while (tmp->rear != nullptr) {
+                cout << count++ << " | " << tmp->data;
+                showCursor(count - 1);
+                cout << endl;
+                tmp = tmp->rear;
+            }
+            cout << count << " | " << tmp->data;
+            showCursor(count);
             cout << endl;
-            tmp = tmp->rear;
         }
-        cout << count << " | " << tmp->data;
-        showCursor(count);
-        cout << endl;
     }catch(const char * e){
         cout << "Error:" << e << endl;
     }

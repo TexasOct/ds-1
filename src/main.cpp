@@ -22,29 +22,28 @@ void cinReset() {
 }
 
 const string help_info = "information:"
-                   "\nbegin(b),end(e),cursorSet(c),Move to front(f),Move to next(n),"
-                   "\ndelete line(d), insert(i), Search sub string(S), replace line(r), "
-                   "\nget total chars num(C), get total lines num(L),replace sub string(u),"
-                   "\nwrite into output file(w), read from input file(R), view the input file(s),"
-                   "\nquit system (q)\n";
+                   "\n b - Move cursor to first line\n e - Move cursor to the last line\n c - Set cursor to the expect line\n f - Move to front\n n - Move to next"
+                   "\n d - delete line\n i - insert\n S - Search sub string\n r - replace line"
+                   "\n C - get total chars num\n L - get total lines num\n u - replace sub string"
+                   "\n w - write into output file\n R - read from input file\n s - view the input file"
+                   "\n q - quit system \n";
 
 int main() {
     string fileIn, fileOut;
-    cout << "请输入要被读取的文件名:";
-    cin >> fileIn;
-    cout << "请输入要被写入的文件名:";
-    cin >> fileOut;
+    cout << "Enter the input file name:";
+    getline(cin, fileIn);
+    cout << "Enter the output file name:";
+    getline(cin, fileOut);
 
     fileEditor file(fileIn, fileOut);
     while (1) {
         option select;
         string buf;
         if(cin.fail()) {
-            outl("违规输入！请回车重新输入指令:");
+            outl("illegal entries！Enter to retry:");
             cinReset();
         }
-        outl("*****************");
-        out("请输入操作(h查询):");
+        out("$ ");
         cin >> buf;
         string src, dest;
         select = static_cast<option>(buf[0]);
@@ -55,62 +54,63 @@ int main() {
                 out(help_info);
                 break;
             case begin_:
-                if (file.begin()) outl("移动到开头一行");
+                if (file.begin()) outl("Move to the first line");
                 break;
             case end_:
-                if (file.end()) outl("移动到最后一行");
+                if (file.end()) outl("Move to the last line");
                 break;
             case cursor:
-                out("输出想移动的位置:");
+                out("Enter the line which you want to move:");
                 cin >> num;
                 if(cin.fail()) break;
                 file.setCursor(num);
                 break;
             case front:
-                if (file.frontLine()) outl("移动到当前的上一行");
+                if (file.frontLine()) outl("Move to the front line");
                 break;
             case next_:
-                if (file.nextLine()) outl("移动到当前的下一行");
+                if (file.nextLine()) outl("Move to the rear line");
                 break;
             case del:
-                out("输入希望删除的有效行:");
+                out("Enter the line you want to delete with a legal value:");
                 cin >> num;
                 if (cin.fail()) break;
                 file.delLine(num);
                 break;
             case getLineNum:
-                cout << "当前有" << file.getLineNum() << "行" << endl;
+                cout << "Threre have" << file.getLineNum() << "lines" << endl;
                 break;
             case getCharsNum:
-                cout << "当前有" << file.getCharNum() << "个字符" << endl;
+                cout << "There have" << file.getCharNum() << "chars" << endl;
                 break;
             case insert:
-                out("请输入插入位置(输入的数+1为插入后位置，行首输0):");
+                out("Input the position you want to insert(it will insert in x + 1, enter 0 insert to first line):");
                 cin >> num;
                 if (cin.fail()) break;
                 cin.get();
-                out("请输入要添加的字符串:");
+                out("Enter the string you want to add:");
                 getline(cin, src);
                 file.insertLine(num, src);
                 break;
             case subStr:
-                out("请输入被替换的子串:");
+                cin.get();
+                out("Enter the src substring:");
                 getline(cin, src);
-                out("请输入要替换的内容:");
+                out("Enter the dest substring:");
                 getline(cin, dest);
                 file.replaceSubString(src, dest);
                 break;
             case Search:
-                out("请输入要查找的字串:");
+                out("Enter the target string:");
                 getline(cin, src);
                 file.searchSubString(src);
                 break;
             case replace:
-                out("请输入要替换的行数:");
+                out("Enter the line you want to replace:");
                 cin >> num;
                 if (cin.fail()) break;
                 cin.get();
-                out("请输入内容:");
+                out("Enter the string:");
                 getline(cin, src);
                 file.replaceLine(num, src);
                 break;
@@ -119,18 +119,18 @@ int main() {
                 break;
             case write:
                 file.writeIn();
-                outl("写入了文件");
+                outl("Write into the output file");
                 break;
             case read:
                 file.read();
-                outl("读取了文件");
+                outl("Reread the input file");
                 break;
             case quit:
                 out("Quit System");
                 exit(0);
                 break;
             default:
-                outl("无效的操作!");
+                outl("illegal operation!");
                 break;
         }
     }

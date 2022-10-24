@@ -22,18 +22,18 @@ void cinReset() {
 }
 
 const string help_info = "information:"
-                   "\nbegin(b),end(e),cursorSet(c),Move to front(f),Move to next(n),"
-                   "\ndelete line(d), insert(i), Search sub string(S), replace line(r), "
-                   "\nget total chars num(C), get total lines num(L),replace sub string(u),"
-                   "\nwrite into output file(w), read from input file(R), view the input file(s),"
-                   "\nquit system (q)\n";
+                   "\n 1.begin(b)\n 2.end(e)\n 3.cursorSet(c)\n 4.Move to front(f)\n 5.Move to next(n)\n"
+                   " 6.delete line(d)\n 7.insert(i)\n 8.Search sub string(S)\n 9.replace line(r)\n "
+                   "10.get total chars num(C)\n 11.get total lines num(L)\n 12.replace sub string(u)\n"
+                   " 13.write into output file(w)\n 14.read from input file(R)\n 15.view the input file(s)\n"
+                   " 16.quit system (q)\n";
 
 int main() {
     string fileIn, fileOut;
     cout << "请输入要被读取的文件名:";
-    cin >> fileIn;
+    getline(cin, fileIn);
     cout << "请输入要被写入的文件名:";
-    cin >> fileOut;
+    getline(cin, fileOut);
 
     fileEditor file(fileIn, fileOut);
     while (1) {
@@ -43,8 +43,7 @@ int main() {
             outl("违规输入！请回车重新输入指令:");
             cinReset();
         }
-        outl("*****************");
-        out("请输入操作(h查询):");
+        out("$ ");
         cin >> buf;
         string src, dest;
         select = static_cast<option>(buf[0]);
@@ -94,6 +93,7 @@ int main() {
                 file.insertLine(num, src);
                 break;
             case subStr:
+                cin.get();
                 out("请输入被替换的子串:");
                 getline(cin, src);
                 out("请输入要替换的内容:");

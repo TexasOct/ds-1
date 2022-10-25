@@ -219,6 +219,10 @@ unsigned long fileEditor::getCharNum() const {
 void fileEditor::writeIn() const {
     ofstream ptr;
     ptr.open(fileOut);
+    if(head->rear == nullptr){
+        cout << "This is a empty file!" << endl;
+        return;
+    }
     Node *tmp = head->rear;
     while (tmp->rear != nullptr) {
         ptr << tmp->data << endl;
@@ -253,8 +257,8 @@ void fileEditor::view() const {
     try {
         int count = 1;
         Node *tmp = head->rear;
-        if(pos == 0){
-            cout << "文件为空" << endl;
+        if(head->rear == nullptr){
+            cout << "file is null" << endl;
             return;
         }
         while (tmp->rear != nullptr) {

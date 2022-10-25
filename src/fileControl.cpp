@@ -20,7 +20,6 @@ Node *fileEditor::_setNode(Node *ptr, string dataline) {
         tmp->rear = swp;
         swp->front = tmp;
     }
-
     ptr = tmp;
     line++;
     return ptr;
@@ -36,6 +35,7 @@ void fileEditor::_delNode(int l) {
     } else {
         swp->rear = nullptr;
     }
+
     delete tmp;
     line--;
 }
@@ -78,39 +78,46 @@ void fileEditor::_replaceData(string *str, const string &src, const string &dest
 }
 
 void fileEditor::_delBuffer() {
+    if(nullSignal) return;
     Node *tmp = head->rear;
-    while (tmp->rear != nullptr) {
+    while (tmp != nullptr) {
         tmp = _delNode(tmp);
     }
     _delNode(tmp);
 }
 
+
 fileEditor::fileEditor(string fileI, string fileO) {
     string buf;
     fstream ptr;
-    this->file = std::move(fileI);
-    this->fileOut = std::move(fileO);
-    ptr.open(this->file, fstream::out);
+    file = std::move(fileI);
+    fileOut = std::move(fileO);
+    ptr.open(file, fstream::out);
+
     while (getline(ptr, buf)) {
         cursor = _setNode(cursor, buf);
         pos++;
     }// 创建文件 链表
+    if(pos == 0) nullSignal = true;
     ptr.close();
 }
 
 bool fileEditor::begin() {
+    if (nullSignal) return false;
     cursor = _getNode(1);
     pos = 1;
     return true;
 }
 
 bool fileEditor::end() {
+    if (nullSignal) return false;
     cursor = _getNode(line);
     pos = line;
     return true;
 }
 
 bool fileEditor::frontLine() {
+    if (nullSignal) return false;
     if (cursor->front != nullptr) {
         cursor = cursor->front;
         pos--;
@@ -122,6 +129,7 @@ bool fileEditor::frontLine() {
 }
 
 bool fileEditor::nextLine() {
+    if (nullSignal) return false;
     if (cursor->rear != nullptr) {
         cursor = cursor->rear;
         pos++;
@@ -132,17 +140,20 @@ bool fileEditor::nextLine() {
     }
 }
 
-void fileEditor::setCursor(int num) {
+bool fileEditor::setCursor(int num) {
+    if (nullSignal) return false;
     if ((num <= line) && (num >= 1)) {
         cursor = _getNode(num);
         pos = num;
+        return true;
     } else {
         cout << "out of range, please write a legal number" << endl;
-        return;
+        return false;
     }
 }
 
 void fileEditor::delLine(int num) {
+    if (nullSignal) return;
     if (num <= line && num >= 1) {
         if (pos > num) {
             pos--;
@@ -153,19 +164,26 @@ void fileEditor::delLine(int num) {
             cursor = cursor->front;
         }
         _delNode(num);
+        if (line == 0) nullSignal = true;
     } else {
-        cout << "illegal  operate" << endl;
+        cout << "illegal range" << endl;
     }
 }
 
 void fileEditor::insertLine(int num, string str) {
-    _setNode(_getNode(num), std::move(str));
-    if(pos == 0){
-        begin();
+    if (num <= line + 1 && num >= 0) {
+        _setNode(_getNode(num), std::move(str));
+        if(pos == 0){
+            nullSignal = false;
+            begin();
+        }
+    } else {
+        cout << "illegal operate" << endl;
     }
 }
 
 void fileEditor::searchSubString(const string &str) const {
+    if (nullSignal) {cout << "file is empty!"; return;}
     Node *tmp = head->rear;
     int count = 1;
     while (tmp->rear != nullptr) {
@@ -181,6 +199,7 @@ void fileEditor::searchSubString(const string &str) const {
 }
 
 void fileEditor::replaceSubString(const string &str, const string &method) {
+    if (nullSignal) {cout << "file is empty!"; return;}
     Node *tmp = head->rear;
     int count = 1;
     while (tmp->rear != nullptr) {
@@ -198,14 +217,17 @@ void fileEditor::replaceSubString(const string &str, const string &method) {
 }
 
 void fileEditor::replaceLine(int l, string str) {
+    if (nullSignal) {cout << "file is empty!"; return;}
     _modifyNode(l, std::move(str));
 }
 
 int fileEditor::getLineNum() const {
+    if (nullSignal) return 0;
     return line;
 }
 
 unsigned long fileEditor::getCharNum() const {
+    if (nullSignal) return 0;
     unsigned long sum = 0;
     Node *tmp = head->rear;
     while (tmp->rear != nullptr) {
@@ -216,13 +238,11 @@ unsigned long fileEditor::getCharNum() const {
     return sum;
 }
 
-void fileEditor::writeIn() const {
+bool fileEditor::writeIn() const {
     ofstream ptr;
     ptr.open(fileOut);
-    if(head->rear == nullptr){
-        cout << "This is a empty file!" << endl;
-        return;
-    }
+    if (nullSignal) { cout << "Empty stack" << endl;
+        return false; }
     Node *tmp = head->rear;
     while (tmp->rear != nullptr) {
         ptr << tmp->data << endl;
@@ -230,26 +250,33 @@ void fileEditor::writeIn() const {
     }
     ptr << tmp->data;
     ptr.close();
+    return true;
 }
 
-void fileEditor::read() {
+bool fileEditor::read() {
     char choose;
     cout << "Please confirm (y/n):";
-    cin >> choose;
+    cin.get(choose);
+    cin.get();
     if (choose == 'y') {
-        cursor = nullptr;
-        _delBuffer();
+        if (!nullSignal){
+            cursor = nullptr;
+            _delBuffer();
+        }
         cursor = head;
         cursor->rear = nullptr;
+        nullSignal - true;
         pos = 0;
         string buf;
         ifstream ptr;
-        ptr.open(this->file);
+        ptr.open(file);
         while (getline(ptr, buf)) {
             cursor = _setNode(cursor, buf);
             pos++;
         }// 创建文件 链表
+        if (pos > 0) nullSignal = false;
         ptr.close();
+        return true;
     }
 }
 
@@ -257,7 +284,7 @@ void fileEditor::view() const {
     try {
         int count = 1;
         Node *tmp = head->rear;
-        if(head->rear == nullptr){
+        if(nullSignal){
             cout << "file is null" << endl;
             return;
         }
@@ -278,3 +305,4 @@ void fileEditor::view() const {
 void fileEditor::showCursor(int count) const {
     if (pos == count) cout << "  _";
 }
+

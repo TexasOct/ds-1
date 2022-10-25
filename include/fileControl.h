@@ -24,7 +24,7 @@ private:
     unsigned pos = 0;
     Node *head = new Node;
     Node *cursor = head;
-
+    bool nullSignal = true;
 // 子模块
     Node *_getNode(int lineNum); // 获取节点
     Node *_setNode(Node *ptr, string line); // 设置节点
@@ -33,12 +33,13 @@ private:
     void _modifyNode(int lineNum, string modify); // 修改节点字段
     static void _replaceData(string * str, const string& src, const string& dest);
     void _delBuffer();
+
 public:// 对外实现
     explicit fileEditor(string fileIn, string fileOut); //构造函数
     ~fileEditor() = default;;
     bool begin();//移动 cursor 到行首
     bool end();//移动 cursor 到行尾
-    void setCursor(int num);//移动 cursor 到指定位置
+    bool setCursor(int num);//移动 cursor 到指定位置
     bool frontLine();// 移动 cursor 到前一行
     bool nextLine();// 移动 cursor 到下一行
     void delLine(int num);// 删除某一行
@@ -48,8 +49,8 @@ public:// 对外实现
     void replaceLine(int lineNum, string String);// 替换行字段
     int getLineNum() const; // 获取总行数
     unsigned long getCharNum() const; // 获取字符总数
-    void writeIn() const; // 写入到写入文件
-    void read(); // 再次读取该文件，执行覆写
+    bool writeIn() const; // 写入到写入文件
+    bool read(); // 再次读取该文件，执行覆写
     void view() const;// 查看当前文件
     void showCursor(int count) const;
 };

@@ -40,98 +40,97 @@ int main() {
         option select;
         string buf;
         if(cin.fail()) {
-            outl("illegal entries！Enter to retry:");
+            outl("illegal entries!");
             cinReset();
         }
         out("$ ");
-        cin >> buf;
+        getline(cin, buf);
         string src, dest;
-        select = static_cast<option>(buf[0]);
-        switch (select) {
+
+        if(buf.length() == 1){
+            select = static_cast<option>(buf[0]);
             int num;
-            cinReset();
-            case help:
-                out(help_info);
-                break;
-            case begin_:
-                if (file.begin()) outl("Move to the first line");
-                break;
-            case end_:
-                if (file.end()) outl("Move to the last line");
-                break;
-            case cursor:
-                out("Enter the line which you want to move:");
-                cin >> num;
-                if(cin.fail()) break;
-                file.setCursor(num);
-                break;
-            case front:
-                if (file.frontLine()) outl("Move to the front line");
-                break;
-            case next_:
-                if (file.nextLine()) outl("Move to the rear line");
-                break;
-            case del:
-                out("Enter the line you want to delete with a legal value:");
-                cin >> num;
-                if (cin.fail()) break;
-                file.delLine(num);
-                break;
-            case getLineNum:
-                cout << "Threre have" << file.getLineNum() << "lines" << endl;
-                break;
-            case getCharsNum:
-                cout << "There have" << file.getCharNum() << "chars" << endl;
-                break;
-            case insert:
-                out("Input the position you want to insert(it will insert in x + 1, enter 0 insert to first line):");
-                cin >> num;
-                if (cin.fail()) break;
-                cin.get();
-                out("Enter the string you want to add:");
-                getline(cin, src);
-                file.insertLine(num, src);
-                break;
-            case subStr:
-                cin.get();
-                out("Enter the src substring:");
-                getline(cin, src);
-                out("Enter the dest substring:");
-                getline(cin, dest);
-                file.replaceSubString(src, dest);
-                break;
-            case Search:
-                out("Enter the target string:");
-                getline(cin, src);
-                file.searchSubString(src);
-                break;
-            case replace:
-                out("Enter the line you want to replace:");
-                cin >> num;
-                if (cin.fail()) break;
-                cin.get();
-                out("Enter the string:");
-                getline(cin, src);
-                file.replaceLine(num, src);
-                break;
-            case show:
-                file.view();
-                break;
-            case write:
-                file.writeIn();
-                outl("Write into the output file");
-                break;
-            case read:
-                file.read();
-                outl("Reread the input file");
-                break;
-            case quit:
-                out("Quit System");
-                exit(0);
-                break;
-            default:
-                outl("illegal operation!");
-                break;
+            switch (select) {
+                case help:
+                    out(help_info);
+                    break;
+                case begin_:
+                    if (file.begin()) outl("Move to the first line");
+                    break;
+                case end_:
+                    if (file.end()) outl("Move to the last line");
+                    break;
+                case cursor:
+                    out("Enter the line which you want to move:");
+                    cin >> num;
+                    if(cin.fail()) break;
+                    file.setCursor(num);
+                    break;
+                case front:
+                    if (file.frontLine()) outl("Move to the front line");
+                    break;
+                case next_:
+                    if (file.nextLine()) outl("Move to the rear line");
+                    break;
+                case del:
+                    out("Enter the line you want to delete with a legal value:");
+                    cin >> num;
+                    if (cin.fail()) break;
+                    file.delLine(num);
+                    break;
+                case getLineNum:
+                    cout << "Threre have " << file.getLineNum() << " lines" << endl;
+                    break;
+                case getCharsNum:
+                    cout << "There have " << file.getCharNum() << " chars" << endl;
+                    break;
+                case insert:
+                    out("Input the position you want to insert(it will insert in x + 1, enter 0 insert to first line):");
+                    cin >> num;
+                    if (cin.fail()) break;
+                    cin.get();
+                    out("Enter the string you want to add:");
+                    getline(cin, src);
+                    file.insertLine(num, src);
+                    break;
+                case subStr:
+                    out("Enter the src substring:");
+                    getline(cin, src);
+                    out("Enter the dest substring:");
+                    getline(cin, dest);
+                    file.replaceSubString(src, dest);
+                    break;
+                case Search:
+                    out("Enter the target string:");
+                    getline(cin, src);
+                    file.searchSubString(src);
+                    break;
+                case replace:
+                    out("Enter the line you want to replace:");
+                    cin >> num;
+                    if (cin.fail()) break;
+                    cin.get();
+                    out("Enter the string:");
+                    getline(cin, src);
+                    file.replaceLine(num, src);
+                    break;
+                case show:
+                    file.view();
+                    break;
+                case write:
+                    if(file.writeIn()) outl("Write into the output file");
+                    break;
+                case read:
+                    file.read();outl("Reread the input file");
+                    break;
+                case quit:
+                    out("Quit System");
+                    exit(0);
+                    break;
+                default:
+                    outl("illegal operation!");
+                    break;
+            }
         }
     }
     return 0;
